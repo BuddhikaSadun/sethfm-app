@@ -5,6 +5,8 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
 const app = express();
+const serverless = require("serverless-http");
+
 dotenv.config();
 
 app.use(bodyParser.json());
@@ -29,6 +31,9 @@ app.use("/program", programRoutes);
 app.use("/feedback", feedBackRoutes);
 
 // Start Express Server
+/*
 app.listen(PORT, () => {
 	console.log(`Backend running on port ${PORT}`);
-});
+});*/
+
+module.exports = serverless(app);
