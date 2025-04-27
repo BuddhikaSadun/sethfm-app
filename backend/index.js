@@ -17,7 +17,9 @@ const PORT = process.env.PORT || 8080;
 const URL = process.env.MONGODB_URL;
 
 // MongoDB Connection
-mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(URL, {
+	// Remove the deprecated options
+});
 const connection = mongoose.connection;
 connection.once("open", () => {
 	console.log("MongoDB connection successful!");
