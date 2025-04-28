@@ -1,4 +1,4 @@
-const Program = require("../modules/programs.js");
+const Program = require("../modules/programs");
 const fs = require("fs");
 const path = require("path");
 // Save program data
