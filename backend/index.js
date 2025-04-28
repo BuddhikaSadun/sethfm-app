@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-const PORT = process.env.PORT || 8080;
+//const PORT = process.env.PORT || 8080;
 const URL = process.env.MONGODB_URL;
 
 // MongoDB Connection
@@ -29,17 +29,17 @@ connection.once("open", () => {
 const programRoutes = require("./routers/programs.js");
 const feedBackRoutes = require("./routers/feedback.js");
 
+app.get("/", (req, res) => {
+	res.send("Hello from serverless Express!");
+});
+
 app.use("/program", programRoutes);
 app.use("/feedback", feedBackRoutes);
 
 // Start Express Server
 
 app.listen(3000, () => {
-	console.log(`Running locally at http://localhost:${PORT}`);
-});
-
-app.get("/", (req, res) => {
-	res.send("Hello from serverless Express!");
+	console.log(`Running locally at http://localhost:3000`);
 });
 
 module.exports.handler = serverless(app);
