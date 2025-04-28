@@ -33,16 +33,10 @@ app.use("/program", programRoutes);
 app.use("/feedback", feedBackRoutes);
 
 // Start Express Server
-/*
+
 app.listen(PORT, () => {
-	console.log(`Backend running on port ${PORT}`);
-});*/
-if (process.env.NODE_ENV !== "production") {
-	const PORT = process.env.PORT || 8080;
-	app.listen(PORT, () => {
-		console.log(`Running locally at http://localhost:${PORT}`);
-	});
-}
+	console.log(`Running locally at http://localhost:${PORT}`);
+});
 
 app.get("/", (req, res) => {
 	res.send("Hello from serverless Express!");
