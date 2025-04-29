@@ -44,7 +44,7 @@ exports.addProgram = async (req, res) => {
 exports.getPrograms = async (req, res) => {
 	try {
 		const allPrograms = await Program.find()
-			.select("pId title category startTime endTime image")
+			.select("pId title category startTime endTime")
 			.exec();
 
 		res.status(200).json({
