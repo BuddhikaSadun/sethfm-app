@@ -1,36 +1,38 @@
+// /controller/programController.js
 const Program = require("../modules/programs");
-const fs = require("fs");
-const path = require("path");
-// Save program data
+
+// Save program data (optimized for Base64 image upload)
 exports.addProgram = async (req, res) => {
 	try {
-		const newProgram = new Program({
-			pId: req.body.pId,
-			title: req.body.title,
-			category: req.body.category,
-			startTime: req.body.startTime,
-			endTime: req.body.endTime,
-			image: req.file.path,
-		});
-		const saveProgram = await newProgram.save();
+		const { pId, title, category, startTime, endTime } = req.body;
+		let imageBase64 = null;
 
-		console.log(saveProgram);
+		if (req.file) {
+			imageBase64 = req.file.buffer.toString("base64");
+		}
+
+		const newProgram = new Program({
+			pId,
+			title,
+			category,
+			startTime,
+			endTime,
+			image: imageBase64, // Save Base64 image
+		});
+
+		const savedProgram = await newProgram.save();
+
+		console.log(savedProgram);
+
 		res.status(201).json({
 			success: true,
 			message: "Created Program successfully",
-			createdProgram: {
-				id: req.body._id,
-				pId: req.body.pId,
-				title: req.body.title,
-				category: req.body.category,
-				startTime: req.body.startTime,
-				endTime: req.body.endTime,
-				image: req.file.path,
-			},
+			createdProgram: savedProgram, // Return the saved program object directly
 		});
 	} catch (error) {
-		console.error(error); // Log the error for debugging purposes
+		console.error("Add Program Error:", error);
 		res.status(500).json({
+			success: false,
 			message: "Server error",
 		});
 	}
@@ -38,59 +40,24 @@ exports.addProgram = async (req, res) => {
 
 // Get all programs
 
+// Get all programs
 exports.getPrograms = async (req, res) => {
 	try {
 		const allPrograms = await Program.find()
-			.select("pId title category timeDuration startTime endTime image")
+			.select("pId title category startTime endTime image")
 			.exec();
 
-		const response = {
+		res.status(200).json({
+			success: true,
 			count: allPrograms.length,
-			programs: allPrograms.map((doc) => {
-				return {
-					pId: doc.pId,
-					title: doc.title,
-					category: doc.category,
-					startTime: doc.startTime,
-					endTime: doc.endTime,
-					image: doc.image,
-				};
-			}),
-		};
-		res.status(200).json(response);
+			programs: allPrograms,
+		});
 	} catch (error) {
-		console.log(error);
+		console.error("Get Programs Error:", error);
 		res.status(500).json({
-			error: error.message,
+			success: false,
+			message: error.message,
 		});
-	}
-};
-
-//get all images
-exports.getAllImages = async (req, res) => {
-	try {
-		const images = [];
-		var dirname = "../uploads";
-		const programs = await Program.find().select("image").exec();
-		for (const program of programs) {
-			const imageFilePath = path.join(__dirname, "uploads", program.image);
-
-			// Read the image file and encode it as base64
-			const imageBuffer = fs.readFileSync(imageFilePath);
-			const base64Image = Buffer.from(imageBuffer).toString("base64");
-
-			images.push({
-				filename: path.basename(imageFilePath),
-				data: base64Image,
-			});
-		}
-
-		res.status(201).json({
-			message: "Successfully received",
-			payload: images,
-		});
-	} catch (error) {
-		console.log(error);
 	}
 };
 

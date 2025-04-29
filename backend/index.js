@@ -3,23 +3,17 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const path = require("path");
-const app = express();
 const serverless = require("serverless-http");
 
+const app = express();
 dotenv.config();
 
 app.use(bodyParser.json());
 app.use(cors());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-//const PORT = process.env.PORT || 8080;
-const URL = process.env.MONGODB_URL;
 
 // MongoDB Connection
-mongoose.connect(URL, {
-	// Remove the deprecated options
-});
+const URL = process.env.MONGODB_URL;
+mongoose.connect(URL);
 const connection = mongoose.connection;
 connection.once("open", () => {
 	console.log("MongoDB connection successful!");
