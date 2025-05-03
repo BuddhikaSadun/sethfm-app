@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "radio-app",
+    "slug": "radio-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/SethFMLogo.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/SethFMLogo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "SETH FM",
+      "version":4
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/SethFMLogo.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/SethFMLogo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "791c7320-3d27-4d8e-971f-f84cf4769ad2"
+      }
+    }
+  }
+}
