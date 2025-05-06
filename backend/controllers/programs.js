@@ -4,12 +4,18 @@ const Program = require("../modules/programs");
 // Save program data (optimized for Base64 image upload)
 exports.addProgram = async (req, res) => {
 	try {
-		const { pId, title, category, startTime, endTime } = req.body;
-		let imageBase64 = null;
+		console.log("req.file:", req.file); // Log the file to ensure it's being received
 
-		if (req.file) {
-			imageBase64 = req.file.buffer.toString("base64");
+		const { pId, title, category, startTime, endTime } = req.body;
+
+		if (!req.file) {
+			return res
+				.status(400)
+				.json({ success: false, message: "Image file is missing" });
 		}
+
+		const imageBuffer = req.file.buffer;
+		const contentType = req.file.mimetype;
 
 		const newProgram = new Program({
 			pId,
@@ -17,17 +23,18 @@ exports.addProgram = async (req, res) => {
 			category,
 			startTime,
 			endTime,
-			image: imageBase64, // Save Base64 image
+			image: imageBuffer,
+			contentType: contentType,
 		});
 
 		const savedProgram = await newProgram.save();
 
-		console.log(savedProgram);
+		console.log(savedProgram); // Log the saved program for debugging
 
 		res.status(201).json({
 			success: true,
 			message: "Created Program successfully",
-			createdProgram: savedProgram, // Return the saved program object directly
+			createdProgram: savedProgram,
 		});
 	} catch (error) {
 		console.error("Add Program Error:", error);
@@ -39,25 +46,43 @@ exports.addProgram = async (req, res) => {
 };
 
 // Get all programs
-
-// Get all programs
 exports.getPrograms = async (req, res) => {
 	try {
-		const allPrograms = await Program.find()
-			.select("pId title category startTime endTime")
-			.exec();
+		const allPrograms = await Program.find().select(
+			"pId title category startTime endTime contentType",
+		);
 
-		res.status(200).json({
-			success: true,
-			count: allPrograms.length,
-			programs: allPrograms,
-		});
+		const programs = allPrograms.map((program) => ({
+			_id: program._id,
+			pId: program.pId,
+			title: program.title,
+			category: program.category,
+			startTime: program.startTime,
+			endTime: program.endTime,
+			imageUrl: `${req.protocol}://${req.get("host")}/program/image/${
+				program._id
+			}`,
+		}));
+
+		res.status(200).json({ success: true, count: programs.length, programs });
 	} catch (error) {
 		console.error("Get Programs Error:", error);
-		res.status(500).json({
-			success: false,
-			message: error.message,
-		});
+		res.status(500).json({ success: false, message: error.message });
+	}
+};
+
+exports.getImagePrograms = async (req, res) => {
+	try {
+		const program = await Program.findById(req.params.id);
+
+		if (!program || !program.image || !program.contentType) {
+			return res.status(404).send("Image not found");
+		}
+
+		res.set("Content-Type", program.contentType);
+		res.send(program.image);
+	} catch (error) {
+		res.status(500).send("Server error");
 	}
 };
 
