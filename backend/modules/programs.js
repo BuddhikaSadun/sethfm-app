@@ -19,8 +19,10 @@ const programSchema = mongoose.Schema({
 		type: String,
 	},
 	image: {
+		type: Buffer,
+	},
+	contentType: {
 		type: String,
-		required: true,
 	},
 });
 
