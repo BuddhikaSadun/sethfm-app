@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const serverless = require("serverless-http");
 
 const app = express();
 dotenv.config();
@@ -35,5 +34,3 @@ app.use("/feedback", feedBackRoutes);
 app.listen(3000, () => {
 	console.log(`Running locally at http://localhost:3000`);
 });
-
-module.exports.handler = serverless(app);
