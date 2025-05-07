@@ -59,7 +59,7 @@ exports.getPrograms = async (req, res) => {
 			category: program.category,
 			startTime: program.startTime,
 			endTime: program.endTime,
-			imageUrl: `${req.protocol}://${req.get("host")}/program/image/${
+			imageUrl: `${req.protocol}://${req.get("host")}/program/get/${
 				program._id
 			}`,
 		}));
