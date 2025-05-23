@@ -14,10 +14,8 @@ const programSchema = mongoose.Schema({
   category: {
     type: String,
   },
-  imagePath: {
-    type: String,
-    required: true,
-  },
+  imageBase64: String,
+  contentType: String,
 });
 
 const Program = mongoose.model("Program", programSchema);

@@ -1,11 +1,9 @@
-const Program = require("../modules/programs");
-const path = require("path");
 const fs = require("fs");
+const path = require("path");
+const Program = require("../modules/programs");
 
 exports.addProgram = async (req, res) => {
   try {
-    console.log("req.file:", req.file); // Log the file to ensure it's being received
-
     const { title, category, startTime, endTime } = req.body;
 
     if (!req.file) {
@@ -14,17 +12,23 @@ exports.addProgram = async (req, res) => {
         .json({ success: false, message: "Image file is missing" });
     }
 
+    const imagePath = req.file.path;
+    const base64Image = fs.readFileSync(imagePath, { encoding: "base64" });
+    const mimeType = req.file.mimetype;
+
     const newProgram = new Program({
       title,
       category,
       startTime,
       endTime,
-      imagePath: req.file.path,
+      imageBase64: base64Image,
+      contentType: mimeType,
     });
 
     const savedProgram = await newProgram.save();
 
-    console.log(savedProgram);
+    // Optional: delete image from disk after reading
+    fs.unlinkSync(imagePath);
 
     res.status(201).json({
       success: true,
@@ -33,10 +37,7 @@ exports.addProgram = async (req, res) => {
     });
   } catch (error) {
     console.error("Add Program Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -51,9 +52,7 @@ exports.getPrograms = async (req, res) => {
       category: program.category,
       startTime: program.startTime,
       endTime: program.endTime,
-      imageUrl: `${req.protocol}://${req.get(
-        "host"
-      )}/${program.imagePath.replace(/\\/g, "/")}`, // Normalize for Windows paths
+      imageUrl: `data:${program.contentType};base64,${program.imageBase64}`,
     }));
 
     res.status(200).json({ success: true, count: programs.length, programs });
