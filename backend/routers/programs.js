@@ -5,7 +5,7 @@ const router = express.Router();
 
 //Routes
 
-router.post("/add", upload.single("image"), programController.addProgram);
+router.post("/add", upload.single("imagePath"), programController.addProgram);
 router.get("/get", programController.getPrograms);
 router.get("/get/:id", programController.getImagePrograms);
 

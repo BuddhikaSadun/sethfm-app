@@ -9,13 +9,15 @@ dotenv.config();
 
 app.use(bodyParser.json());
 app.use(cors());
+app.use("/uploads", express.static("uploads"));
 
 // MongoDB Connection
 const URL = process.env.MONGODB_URL;
 mongoose.connect(URL);
+
 const connection = mongoose.connection;
 connection.once("open", () => {
-	console.log("MongoDB connection successful!");
+  console.log("MongoDB connection successful!");
 });
 
 // Routes
@@ -23,7 +25,7 @@ const programRoutes = require("./routers/programs.js");
 const feedBackRoutes = require("./routers/feedback.js");
 
 app.get("/", (req, res) => {
-	res.send("Hello from serverless Express!");
+  res.send("Hello from serverless Express!");
 });
 
 app.use("/program", programRoutes);
@@ -32,5 +34,5 @@ app.use("/feedback", feedBackRoutes);
 // Start Express Server
 
 app.listen(3000, () => {
-	console.log(`Running locally at http://localhost:3000`);
+  console.log(`Running locally at http://localhost:3000`);
 });
