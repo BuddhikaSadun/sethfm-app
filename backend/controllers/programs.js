@@ -63,6 +63,7 @@ exports.getPrograms = async (req, res) => {
   }
 };
 
+/*
 exports.getImagePrograms = async (req, res) => {
   try {
     const program = await Program.findById(req.params.id);
@@ -82,7 +83,7 @@ exports.getImagePrograms = async (req, res) => {
     console.error("Get Image Error:", error);
     res.status(500).send("Server error");
   }
-};
+};*/
 
 // Delete Program
 exports.deleteProgram = async (req, res) => {
